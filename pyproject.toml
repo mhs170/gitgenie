@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gitgenie"
+version = "0.1.0"
+description = "AI-powered commit messages and PR descriptions"
+requires-python = ">=3.9"
+
+dependencies = [
+    "click>=8.1.0",
+    "gitpython>=3.1.0",
+    "ollama>=0.1.0",
+    "rich>=13.0.0",
+]
+
+[project.scripts]
+gitgenie = "gitgenie.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
