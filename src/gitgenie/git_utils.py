@@ -3,7 +3,8 @@ from git import Repo, InvalidGitRepositoryError
 def is_git_repo():
     try:
         repo = Repo(search_parent_directories=True)
-        assert not repo.bare
+        if repo.bare:
+            return False
         return True
     except InvalidGitRepositoryError:
         return False
