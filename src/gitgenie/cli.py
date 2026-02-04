@@ -1,19 +1,17 @@
 import click
-from .git_utils import get_staged_changes
+from .git_utils import get_staged_changes, is_git_repo
 
 @click.group()
 def main():
     """Main entry point for the GitGenie CLI."""
-    pass
+    if not is_git_repo():
+        click.echo("Error: Not a git repository")
+        raise click.Abort()
 
 @main.command()
 def commit():
     click.echo('Generating commit...')
     diff = get_staged_changes()
-
-    if diff is None:
-        click.echo("Error: Not a git repository")
-        return
         
     if not diff:
         click.echo("Error: No staged changes")
