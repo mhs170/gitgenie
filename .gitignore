@@ -20,6 +20,8 @@ build/
 .idea/
 *.swp
 
+notes.md
+
 # OS
 .DS_Store
 
