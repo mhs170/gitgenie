@@ -1,6 +1,7 @@
 import click
-from .git_utils import get_staged_changes, is_git_repo
+from .git_utils import get_staged_changes, is_git_repo, get_commit_log
 from .commit_analyzer import generate_commit_message
+from .pr_generator import generate_pr_description
 
 @click.group()
 def main():
@@ -27,7 +28,30 @@ def commit():
 
 @main.command()
 def pr():
-    click.echo('Creating PR description...')
+    click.echo('Generating PR description...')
+    
+    commits = get_commit_log()
+    
+    if commits is None:
+        click.echo("Error: Could not get commit log")
+        return
+    
+    if not commits:
+        click.echo("No commits found between current branch and main")
+        return
+    
+    click.echo(f"Found {len(commits)} commits\n")
+    
+    pr_description = generate_pr_description(commits)
+    
+    if pr_description is None:
+        click.echo("Error: Failed to generate PR description")
+        return
+    
+    click.echo("\n--- Generated PR Description ---")
+    click.echo(pr_description)
+    click.echo("--------------------------------\n")
+
 
 if __name__ == '__main__':
     print('hello, world')
