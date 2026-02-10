@@ -38,6 +38,16 @@ def get_commit_log(main_branch_name='main'):
         return commit_list
     except Exception:
         return None
+    
+def commit_with_message(message):
+    repo = _get_repo()
+    if repo is None:
+        return None
+    try:
+        repo.index.commit(message)
+        return True
+    except Exception:
+        return None
 
 
 if __name__ == '__main__':

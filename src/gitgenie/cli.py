@@ -1,5 +1,5 @@
 import click
-from .git_utils import get_staged_changes, is_git_repo, get_commit_log
+from .git_utils import get_staged_changes, is_git_repo, get_commit_log, commit_with_message
 from .commit_analyzer import generate_commit_message
 from .pr_generator import generate_pr_description
 
@@ -25,6 +25,15 @@ def commit():
     click.echo("\n--- Generated Commit Message ---")
     click.echo(commit_message)
     click.echo("--------------------------------\n")
+
+    if click.confirm('Would you like gitgenie to commit your staged changes with the generated message?'):
+        result = commit_with_message(commit_message)
+        if result:
+            click.echo('Committed successfully!')
+        else:
+            click.echo('Error: failed to commit')
+    else:
+        click.echo('Commit cancelled')
 
 @main.command()
 def pr():
