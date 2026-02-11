@@ -15,21 +15,22 @@ def commit():
     diff = get_staged_changes()
     
     if not diff:
-            click.echo("Error: No staged changes")
-            return
+        click.echo("Error: No staged changes")
+        return
+    
+    click.echo('Generating commit message...')
+    commit_message = generate_commit_message(diff)
+    if commit_message is None:
+        click.echo('Error: Failed to generate commit message')
+        return
+    
+    click.echo("\n--- Generated Commit Message ---")
+    click.echo(commit_message)
+    click.echo("--------------------------------\n")
 
     while True:
-        click.echo('Generating commit message...')
-        commit_message = generate_commit_message(diff)
-        if commit_message is None:
-            click.echo('Error: Failed to generate commit message')
-            return
-        click.echo("\n--- Generated Commit Message ---")
-        click.echo(commit_message)
-        click.echo("--------------------------------\n")
-        
-        option = click.prompt("[c]ommit, [r]egenerate, [n]cancel")
-        if option == 'n':
+        option = click.prompt("[c]ommit, [r]egenerate, [q]uit")
+        if option == 'q':
             click.echo('Cancelled')
             break
         elif option == 'c':
@@ -40,10 +41,16 @@ def commit():
             else:
                 click.echo('Error: failed to commit')
         elif option == 'r':
-            continue
+            click.echo('Regenerating...')
+            commit_message = generate_commit_message(diff)
+            if commit_message is None:
+                click.echo('Error: Failed to generate commit message')
+                return
+            click.echo("\n--- Generated Commit Message ---")
+            click.echo(commit_message)
+            click.echo("--------------------------------\n")
         else:
-            click.echo("Invalid option. Please enter c, r, or n")
-            continue
+            click.echo("Invalid option. Please enter c, r, or q")
 
 @main.command()
 def pr():
