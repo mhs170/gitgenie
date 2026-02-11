@@ -12,28 +12,38 @@ def main():
 
 @main.command()
 def commit():
-    click.echo('Generating commit...')
     diff = get_staged_changes()
-        
+    
     if not diff:
-        click.echo("Error: No staged changes")
-        return
-    commit_message = generate_commit_message(diff)
-    if commit_message is None:
-        click.echo('Error: Failed to generate commit message')
-        return
-    click.echo("\n--- Generated Commit Message ---")
-    click.echo(commit_message)
-    click.echo("--------------------------------\n")
+            click.echo("Error: No staged changes")
+            return
 
-    if click.confirm('Would you like gitgenie to commit your staged changes with the generated message?'):
-        result = commit_with_message(commit_message)
-        if result:
-            click.echo('Committed successfully!')
+    while True:
+        click.echo('Generating commit message...')
+        commit_message = generate_commit_message(diff)
+        if commit_message is None:
+            click.echo('Error: Failed to generate commit message')
+            return
+        click.echo("\n--- Generated Commit Message ---")
+        click.echo(commit_message)
+        click.echo("--------------------------------\n")
+        
+        option = click.prompt("[c]ommit, [r]egenerate, [n]cancel")
+        if option == 'n':
+            click.echo('Cancelled')
+            break
+        elif option == 'c':
+            result = commit_with_message(commit_message) 
+            if result:
+                click.echo('Committed successfully!')
+                break
+            else:
+                click.echo('Error: failed to commit')
+        elif option == 'r':
+            continue
         else:
-            click.echo('Error: failed to commit')
-    else:
-        click.echo('Commit cancelled')
+            click.echo("Invalid option. Please enter c, r, or n")
+            continue
 
 @main.command()
 def pr():
