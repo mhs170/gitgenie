@@ -23,10 +23,6 @@ def commit():
     if commit_message is None:
         click.echo('Error: Failed to generate commit message')
         return
-    
-    click.echo("\n--- Generated Commit Message ---")
-    click.echo(commit_message)
-    click.echo("--------------------------------\n")
 
     while True:
         option = click.prompt("[c]ommit, [r]egenerate, [q]uit")
@@ -46,17 +42,15 @@ def commit():
             if commit_message is None:
                 click.echo('Error: Failed to generate commit message')
                 return
-            click.echo("\n--- Generated Commit Message ---")
-            click.echo(commit_message)
-            click.echo("--------------------------------\n")
         else:
             click.echo("Invalid option. Please enter c, r, or q")
 
 @main.command()
-def pr():
-    click.echo('Generating PR description...')
+@click.argument('base_branch', default='main')
+def pr(base_branch):
+    click.echo(f'Generating PR description (comparing against ${base_branch})...')
     
-    commits = get_commit_log()
+    commits = get_commit_log(base_branch)
     
     if commits is None:
         click.echo("Error: Could not get commit log")
